@@ -1,0 +1,68 @@
+import React, { useState } from "react";
+import { useHistory } from "react-router-dom";
+import "./LoginPage.css";
+
+function Login() {
+  const [employeeNumber, setEmployeeNumber] = useState("");
+  const [password, setPassword] = useState("");
+  const history = useHistory();
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    const apiUrl =
+      "https://sheets.googleapis.com/v4/spreadsheets/1yajpuM9YfEqlHgGbDxYVQOcHrFfJYoTho1b1qoOME6Y/values/%E3%82%B7%E3%83%BC%E3%83%881?key=AIzaSyBoGN_ggnHtfZrcL1FX81HSWzQirXL8eyg";
+
+    try {
+      const response = await fetch(apiUrl);
+      const data = await response.json();
+      const rows = data.values;
+
+      const isAuthenticated = rows.some(
+        (row: any[]) => row[0] === employeeNumber && row[6] === password
+      );
+      if (isAuthenticated) {
+        history.push("/MemberPage");
+      } else {
+        alert("ログインに失敗しました。");
+      }
+    } catch (error) {
+      console.error("An error occurred while fetching data: ", error);
+    }
+  };
+
+  return (
+    <div>
+      <div className="backGround">
+        <div className="formContainer">
+          <form className="uiForm" onSubmit={handleSubmit}>
+            <img className="mainLogo" src="/logo2.png" alt="" />
+            <div className="formField">
+              <input
+                type="text"
+                placeholder="社員番号"
+                name="employeeNumber"
+                value={employeeNumber}
+                onChange={(e) => setEmployeeNumber(e.target.value)}
+              />
+            </div>
+            <div className="formField">
+              <input
+                type="password"
+                placeholder="パスワード"
+                name="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            </div>
+            <button type="submit" className="submitButton">
+              ログイン
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default Login;
