@@ -1,11 +1,14 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 import "./LoginPage.css";
+import { login } from "./authSlice";
+import { useDispatch } from "react-redux";
 
 function Login() {
   const [employeeNumber, setEmployeeNumber] = useState("");
   const [password, setPassword] = useState("");
   const history = useHistory();
+  const dispatch = useDispatch();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -18,10 +21,17 @@ function Login() {
       const data = await response.json();
       const rows = data.values;
 
-      const isAuthenticated = rows.some(
+      const user = rows.find(
         (row: any[]) => row[0] === employeeNumber && row[6] === password
       );
-      if (isAuthenticated) {
+
+      if (user) {
+        dispatch(
+          login({
+            userData: user,
+            expiryTimestamp: new Date().getTime() + 86400000,
+          })
+        );
         history.push("/MemberPage");
       } else {
         alert("ログインに失敗しました。");
