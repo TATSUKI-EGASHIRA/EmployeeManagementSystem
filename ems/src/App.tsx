@@ -1,13 +1,28 @@
 import React from "react";
+import { useSelector } from "react-redux";
+import { BrowserRouter, Route, Redirect, Switch } from "react-router-dom";
 import Login from "./Login";
-import { BrowserRouter, Route } from "react-router-dom";
+import MemberPage from "./MemberPage";
+
+const selectIsAuthenticated = (state: any) => state.auth.isAuthenticated;
 
 const App: React.FC = () => {
+  const isAuthenticated = useSelector(selectIsAuthenticated);
+
   return (
     <BrowserRouter>
-      <Route>
-        <Login />
-      </Route>
+      <Switch>
+        <Route path="/login">
+          <Login />
+        </Route>
+
+        <Route
+          path="/MemberPage"
+          render={() =>
+            isAuthenticated ? <MemberPage /> : <Redirect to="/login" />
+          }
+        />
+      </Switch>
     </BrowserRouter>
   );
 };

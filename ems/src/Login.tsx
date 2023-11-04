@@ -43,7 +43,7 @@ function Login() {
 
   return (
     <div>
-      <div className="backGround">
+      <div className="LoginBackGround">
         <div className="formContainer">
           <form className="uiForm" onSubmit={handleSubmit}>
             <img className="mainLogo" src="/logo2.png" alt="" />

@@ -1,4 +1,4 @@
-.backGround {
+.LoginBackGround {
   background-image: url(/src/img/background.jpg);
   display: flex;
   align-items: center;
@@ -45,7 +45,7 @@
   border-radius: 4px;
   border-radius: 14px;
   border: 1px solid #000;
-  background: #FFF;
+  background: #fff;
   width: 100%;
 }
 
@@ -58,7 +58,7 @@
   font-weight: 600;
   margin-bottom: 3px;
 }
-button {
+.submitButton {
   background: #0563b4;
   width: 30%;
   margin-top: 10px;
@@ -71,6 +71,6 @@ button {
   transition: all 0.3s;
 }
 
-button:hover {
+.submitButton:hover {
   background-color: #0e528d;
 }
