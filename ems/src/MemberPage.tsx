@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Header from "./components/Header";
+import SideMenu from "./components/SideMenu";
 import Box from "@mui/material/Box";
 import InputLabel from "@mui/material/InputLabel";
 import FormControl from "@mui/material/FormControl";
@@ -33,6 +34,7 @@ function MemberPage() {
   return (
     <div className="MemberBackGround">
       <Header />
+      <SideMenu />
       <div className="sortBox">
         <Box sx={{ minWidth: 100 }}>
           <FormControl fullWidth>

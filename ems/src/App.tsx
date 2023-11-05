@@ -1,6 +1,7 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import { BrowserRouter, Route, Redirect, Switch } from "react-router-dom";
+import "./normalize.css";
 import Login from "./Login";
 import MemberPage from "./MemberPage";
 

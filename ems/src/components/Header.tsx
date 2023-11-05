@@ -1,5 +1,6 @@
 import React from "react";
 import "./Header.css";
+import SearchIcon from "@mui/icons-material/Search";
 
 function Header() {
   return (
@@ -8,21 +9,16 @@ function Header() {
         <img className="mainLogo" src="/top-logo-white.png" alt="" />
         <p className="logoText">社員管理システム</p>
       </div>
-      <div className="searchForm">
-        <form action="#" className="search-form">
-          <label>
-            <input
-              className="search-form-input"
-              type="text"
-              placeholder="キーワードを入力"
-            />
-          </label>
-          <button
-            className="search-form-button"
-            type="submit"
-            aria-label="検索"
-          ></button>
-        </form>
+      <div className="search-box">
+        <input
+          className="search-txt"
+          type="text"
+          name=""
+          placeholder="キーワードを入力"
+        />
+        <button className="search-btn">
+          <SearchIcon />
+        </button>
       </div>
     </div>
   );
