@@ -3,6 +3,7 @@ import { useHistory } from "react-router-dom";
 import "./LoginPage.css";
 import { login } from "./authSlice";
 import { useDispatch } from "react-redux";
+import GoogleLogin from "./components/googleLogin";
 
 function Login() {
   const [employeeNumber, setEmployeeNumber] = useState("");
@@ -69,6 +70,7 @@ function Login() {
               ログイン
             </button>
           </form>
+          <GoogleLogin />
         </div>
       </div>
     </div>

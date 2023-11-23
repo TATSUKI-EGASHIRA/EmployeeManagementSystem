@@ -4,6 +4,7 @@ import { BrowserRouter, Route, Redirect, Switch } from "react-router-dom";
 import "./normalize.css";
 import Login from "./Login";
 import MemberPage from "./MemberPage";
+import UserProfile from "./UserProfile";
 
 const selectIsAuthenticated = (state: any) => state.auth.isAuthenticated;
 
@@ -21,6 +22,12 @@ const App: React.FC = () => {
           path="/MemberPage"
           render={() =>
             isAuthenticated ? <MemberPage /> : <Redirect to="/login" />
+          }
+        />
+        <Route
+          path="/profile/:userId"
+          render={({ match }) =>
+            isAuthenticated ? <UserProfile /> : <Redirect to="/login" />
           }
         />
       </Switch>

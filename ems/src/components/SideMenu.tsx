@@ -1,21 +1,25 @@
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../store";
+import Button from "@mui/material/Button";
+import TextField from "@mui/material/TextField";
+import SaveIcon from "@mui/icons-material/Save";
+import EditIcon from "@mui/icons-material/Edit";
 import "./SideMenu.css";
 import CloseIcon from "@mui/icons-material/Close";
 import PersonIcon from "@mui/icons-material/Person";
-import EditIcon from "@mui/icons-material/Edit";
 
 function SideMenu() {
   const [isOpen, setIsOpen] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedComment, setEditedComment] = useState("");
 
-  // Redux ストアから従業員情報とプロファイル画像URLを取得
   const {
     employeeNumber,
     employeeName,
     employeeFurigana,
-    employeeComment,
     employeeImg,
+    employeeComment,
   } = useSelector((state: RootState) => {
     const userData = state.auth.userData || [];
     return {
@@ -23,59 +27,104 @@ function SideMenu() {
       employeeName: userData[1] || "",
       employeeFurigana: userData[2] || "",
       employeeImg: userData[5] || "/Noimage.png",
-      employeeComment: userData[8],
+      employeeComment: userData[8] || "",
     };
   });
 
-  const menuWidth = 350; // ここでサイドメニューの幅を定義
+  const menuWidth = 350;
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
   };
 
+  const handleEditClick = () => {
+    setIsEditing(true);
+    setEditedComment(employeeComment);
+  };
+
+  const handleSaveClick = async () => {
+    const spreadsheetId = "1yajpuM9YfEqlHgGbDxYVQOcHrFfJYoTho1b1qoOME6Y"; // スプレッドシートID
+    const apiKey = "AIzaSyBoGN_ggnHtfZrcL1FX81HSWzQirXL8eyg"; // APIキー
+    const range = "シート1"; // シート名
+
+    const getUrl = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${range}?key=${apiKey}`;
+
+    try {
+      const getResponse = await fetch(getUrl);
+      const data = await getResponse.json();
+      console.log("Fetched Data:", data); // データ取得のデバッグ
+
+      const rows = data.values;
+      const rowIndex = rows.findIndex(
+        (row: string[]) => row[0] === employeeNumber
+      );
+      console.log("Row Index:", rowIndex); // 行インデックスのデバッグ
+
+      if (rowIndex === -1) {
+        alert("User not found");
+        return;
+      }
+
+      const cellRange = `${range}!I${rowIndex + 1}`;
+      console.log("Cell Range:", cellRange); // セル範囲のデバッグ
+
+      const updateUrl = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${cellRange}?valueInputOption=USER_ENTERED&key=${apiKey}`;
+
+      const updateResponse = await fetch(updateUrl, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          values: [[editedComment]],
+        }),
+      });
+
+      console.log("Update Response:", await updateResponse.text()); // 更新レスポンスのデバッグ
+
+      if (!updateResponse.ok) {
+        throw new Error("Failed to update spreadsheet");
+      }
+
+      setIsEditing(false);
+      alert("Comment updated successfully.");
+    } catch (error) {
+      console.error("Error:", error);
+      alert("Failed to update comment.");
+    }
+  };
+
   return (
     <>
-      {/* オーバーレイ */}
-      {isOpen && (
-        <div
-          className="overlay"
-          onClick={toggleMenu} // オーバーレイをクリックするとメニューが閉じる
-        />
-      )}
+      {isOpen && <div className="overlay" onClick={toggleMenu} />}
 
       <div className="menuToggleArea">
-        {/* メニュートグルボタン */}
         <button
           className="menuToggle"
           onClick={toggleMenu}
-          style={{
-            left: isOpen ? `${menuWidth}px` : "0", // isOpenがtrueならメニューの幅の位置に、falseなら0の位置に
-          }}
+          style={{ left: isOpen ? `${menuWidth}px` : "0" }}
         >
           {isOpen ? (
             <p className="toogleText">
-              <CloseIcon />
-              CLOSE
+              <CloseIcon /> CLOSE
             </p>
           ) : (
             <p className="toogleText">
-              <PersonIcon />
-              MY PAGE
+              <PersonIcon /> MY PAGE
             </p>
           )}
         </button>
 
-        {/* サイドメニュー */}
         <div
           className="sideMenu"
           style={{
-            width: `${menuWidth}px`, // メニューの幅
-            transform: isOpen ? "translateX(0)" : `translateX(-${menuWidth}px)`, // isOpenがtrueなら表示、falseなら隠す
+            width: `${menuWidth}px`,
+            transform: isOpen ? "translateX(0)" : `translateX(-${menuWidth}px)`,
           }}
         >
-          {/* メニューコンテンツ */}
           <div className="SideProfileContainer">
-            <div className="editBtn">
+            <h1 className="sideTitle">Profile</h1>
+            <div className="editBtn" onClick={handleEditClick}>
               <EditIcon />
             </div>
             <div className="profileImageContainer">
@@ -84,7 +133,26 @@ function SideMenu() {
             <p className="employeeNumber">{employeeNumber}</p>
             <p className="employeeName">{employeeName}</p>
             <p className="employeeFurigana">{employeeFurigana}</p>
-            <p className="employeeComment">{employeeComment}</p>
+            {isEditing ? (
+              <>
+                <TextField
+                  fullWidth
+                  multiline
+                  variant="outlined"
+                  value={editedComment}
+                  onChange={(e) => setEditedComment(e.target.value)}
+                />
+                <Button
+                  startIcon={<SaveIcon />}
+                  onClick={handleSaveClick}
+                  color="primary"
+                >
+                  Save
+                </Button>
+              </>
+            ) : (
+              <p className="employeeComment">{employeeComment}</p>
+            )}
           </div>
         </div>
       </div>

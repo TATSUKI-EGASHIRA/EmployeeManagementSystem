@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import Header from "./components/Header";
 import SideMenu from "./components/SideMenu";
 import Box from "@mui/material/Box";
@@ -57,7 +58,11 @@ function MemberPage() {
       <div className="profileArea">
         {data.map((row, index) =>
           index !== 0 ? (
-            <div key={index} className="profileContainer">
+            <Link
+              to={`/profile/${row[0]}`}
+              key={index}
+              className="profileContainer"
+            >
               <div className="memberFhotFrame">
                 <img
                   className="memberFhoto"
@@ -68,7 +73,7 @@ function MemberPage() {
               <p className="employeeNumber">{row[0]}</p>
               <p className="employeeName">{row[1]}</p>
               <p className="employeeFurigana">{row[2]}</p>
-            </div>
+            </Link>
           ) : null
         )}
       </div>
