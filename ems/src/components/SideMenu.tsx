@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../store";
+import { updateUserData } from '../authSlice';
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import SaveIcon from "@mui/icons-material/Save";
@@ -39,6 +40,8 @@ const SideMenu: React.FC = () => {
     };
   });
 
+  const dispatch = useDispatch();
+
   const menuWidth = 350;
 
   const toggleMenu = (): void => {
@@ -51,40 +54,39 @@ const SideMenu: React.FC = () => {
   };
 
   const handleSaveClick = async (): Promise<void> => {
+    const accessToken = localStorage.getItem('accessToken');
+    if (!accessToken) {
+      alert("Please log in with Google to update.");
+      return;
+    }
+
     const spreadsheetId = "1yajpuM9YfEqlHgGbDxYVQOcHrFfJYoTho1b1qoOME6Y";
     const range = "シート1";
-    const accessToken =
-      "ya29.a0AfB_byARCNrC9VlUuSrbwkQG2q3qYzeyC11dnNOg-Na5GdRm39Vmce8wDZ0jhoSUYFBESIujcnKAW7gooxSyR8nyUboyrhBTk8pXa8kY199o4ChYeKL09ydyQE2vS_C1-GJ1rClSAGEOQx63X-T8K0BEV1SKjnWtJRShaCgYKAXESARESFQHGX2MiDVl6Pt1ho9JG10OEb0rvGw017";
 
     const getUrl = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${range}`;
+    const getResponse = await fetch(getUrl, {
+      headers: {
+        "Authorization": `Bearer ${accessToken}`,
+      },
+    });
+    const data = await getResponse.json();
+
+    const rowIndex = data.values.findIndex((row: string[]) => row[0] === employeeNumber);
+    if (rowIndex === -1) {
+      alert("User not found");
+      return;
+    }
+
+    const cellRange = `${range}!I${rowIndex + 1}`;
+
+    const updateUrl = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${cellRange}?valueInputOption=USER_ENTERED`;
 
     try {
-      const getResponse = await fetch(getUrl, {
-        headers: {
-          "Authorization": `Bearer ${accessToken}`,
-        },
-      });
-      const data = await getResponse.json();
-
-      const rows = data.values;
-      const rowIndex = rows.findIndex(
-        (row: string[]) => row[0] === employeeNumber
-      );
-
-      if (rowIndex === -1) {
-        alert("User not found");
-        return;
-      }
-
-      const cellRange = `${range}!I${rowIndex + 1}`;
-
-      const updateUrl = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${cellRange}?valueInputOption=USER_ENTERED`;
-
       const updateResponse = await fetch(updateUrl, {
         method: "PUT",
         headers: {
-          "Content-Type": "application/json",
           "Authorization": `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           values: [[editedComment]],
@@ -92,16 +94,22 @@ const SideMenu: React.FC = () => {
       });
 
       if (!updateResponse.ok) {
-        throw new Error("Failed to update spreadsheet");
+        const errorResponse = await updateResponse.json();
+        console.error("Update Error:", errorResponse);
+        alert("Failed to update comment.");
+        return;
       }
 
+      dispatch(updateUserData([...data.values[rowIndex], editedComment]));
       setIsEditing(false);
-      alert("Comment updated successfully.");
+      alert("編集が適応されました。");
     } catch (error) {
       console.error("Error:", error);
       alert("Failed to update comment.");
     }
   };
+
+  
 
   return (
     <>

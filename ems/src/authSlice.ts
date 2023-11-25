@@ -1,3 +1,4 @@
+// authSlice.ts
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface AuthState {
@@ -12,7 +13,7 @@ const initialState: AuthState = {
   expiryTimestamp: null,
 };
 
-export const authSlice = createSlice({
+const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
@@ -29,9 +30,12 @@ export const authSlice = createSlice({
       state.userData = null;
       state.expiryTimestamp = null;
     },
+    updateUserData: (state, action: PayloadAction<any[]>) => {
+      state.userData = action.payload;
+    },
   },
 });
 
-export const { login, logout } = authSlice.actions;
+export const { login, logout, updateUserData } = authSlice.actions;
 
 export default authSlice.reducer;

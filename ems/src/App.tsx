@@ -5,6 +5,7 @@ import "./normalize.css";
 import Login from "./Login";
 import MemberPage from "./MemberPage";
 import UserProfile from "./UserProfile";
+import LoginCallback from './LoginCallback';
 
 const selectIsAuthenticated = (state: any) => state.auth.isAuthenticated;
 
@@ -16,6 +17,9 @@ const App: React.FC = () => {
       <Switch>
         <Route path="/login">
           <Login />
+        </Route>
+        <Route path="/LoginCallback">
+          <LoginCallback />
         </Route>
 
         <Route
