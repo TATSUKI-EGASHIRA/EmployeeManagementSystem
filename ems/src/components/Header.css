@@ -1,0 +1,87 @@
+.headerBackGround {
+  background-color: #000;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  left: 0;
+  position: fixed;
+  z-index: 1000;
+}
+
+.navImg {
+  width: 10%;
+  height: auto;
+  margin: 25px auto 0 40px;
+}
+
+.navImg img {
+  width: 100%;
+  height: auto;
+}
+
+.logoText {
+  color: #fff;
+  font-size: 10px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.search-box {
+  position: absolute;
+  top: 50%; /* 画面の上から50%の位置に */
+  right: 30px; /* 画面の右から10%の位置に */
+  transform: translateY(
+    -50%
+  ); /* Y軸において自身の高さの50%分上に移動し中央に配置 */
+  width: 60px; /* ボタンの幅に合わせて初期サイズを設定 */
+  height: 60px;
+  border-radius: 40px;
+  background: #2f3640;
+  transition: width 0.4s ease-in-out;
+  overflow: hidden;
+}
+
+.search-box:hover {
+  width: 290px; /* ホバー時の検索ボックスの全体の幅 */
+}
+
+.search-btn {
+  position: absolute;
+  top: 0; /* 上端に配置 */
+  right: 0; /* 右端に配置 */
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: #ffffff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.search-txt {
+  position: absolute;
+  top: 0; /* 上端に配置 */
+  right: 40px; /* ボタンの幅分右にオフセット */
+  border: none;
+  background: none;
+  outline: none;
+  color: white;
+  font-size: 16px;
+  line-height: 40px;
+  width: 0;
+  transition: width 0.4s ease-in-out;
+  text-align: left;
+  padding: 10px 0px;
+  font-size: 18px;
+}
+
+.search-box:hover > .search-txt {
+  width: 240px; /* ホバー時のテキストボックスの幅 */
+}
