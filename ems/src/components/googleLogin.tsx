@@ -14,7 +14,7 @@ const GoogleLogin: React.FC = () => {
     window.location.href = authUrl;
   };
 
-  return <button onClick={handleLogin}>Login with Google</button>;
+  return <button onClick={handleLogin}>プロフィール編集する場合はこちらもログイン</button>;
 };
 
 export default GoogleLogin;
